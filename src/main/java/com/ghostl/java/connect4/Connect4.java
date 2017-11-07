@@ -17,7 +17,8 @@ public class Connect4 {
 	}
 
 	public int getNumberOfDiscs() {
-		return 0;
+		
+		return IntStream.range(0,COLUMNS).map(this::getNumberOfDiscsInColumn).sum();
 	}
 
 	public int putDiscInColumn(int column) {
