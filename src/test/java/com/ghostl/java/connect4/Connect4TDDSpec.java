@@ -6,13 +6,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 import static org.hamcrest.CoreMatchers.*;
 
 
 public class Connect4TDDSpec {
 
 	private Connect4 tested;
+	private OutputStream outputStream;
 	
 	@Rule 
 	public ExpectedException exception = ExpectedException.none(); 
@@ -20,7 +27,8 @@ public class Connect4TDDSpec {
 	
 	@Before
 	public void beforeEachTest(){
-		tested = new Connect4();
+		outputStream = new ByteArrayOutputStream();
+		tested = new Connect4(new PrintStream(outputStream));
 	}
 	
 	
@@ -69,5 +77,32 @@ public class Connect4TDDSpec {
 		exception.expectMessage("No more room in column "+ column);
 		tested.putDiscInColumn(column);
 	}
+	
+	@Test
+	public void whenFirstPlaysThenDiscColorIsRed(){
+		assertThat(tested.getCurrentPlayer(), is("R"));
+	}
+	
+	@Test
+	public void whenSecondPlayerPlaysThenDiscColorIsRed(){
+		int column = 1;
+		tested.putDiscInColumn(column);
+		assertThat(tested.getCurrentPlayer(), is("G"));
+		
+	}
+	
+	@Test
+	public void whenAskedForCurrentPlayerThenOutputNotice(){
+		tested.getCurrentPlayer();
+		assertThat(outputStream.toString(), containsString("Player R turn"));
+	}
+	
+	@Test
+	public void whenAdiscIsIntroducedTheBoardIsPrinted(){
+		int column = 1;
+		tested.putDiscInColumn(column);
+		assertThat(outputStream.toString(), containsString("| |R| | | | | |"));
+	}
+	
 	
 }
