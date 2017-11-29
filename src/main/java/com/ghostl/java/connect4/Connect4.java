@@ -16,7 +16,7 @@ public class Connect4 {
 	private static final String GREEN = "G";
 	private static final String DELIMITER = "|";
 	
-	private static final int DISCS_TO_WIN = 4;
+	private static final int DISCS_FOR_WIN = 4;
 	private String currentPlayer = RED;
 	
 	private String winner = "";
@@ -68,6 +68,8 @@ public class Connect4 {
 			currentPlayer=GREEN;
 		else
 			currentPlayer=RED;
+		
+		System.out.println("Current turn: " + currentPlayer);
 	}
 
 	private int getNumberOfDiscsInColumn(int column) {
@@ -103,11 +105,10 @@ public class Connect4 {
 	
 	
 	private void checkWinner(int row, int column) {
-	    if (winner.isEmpty()) {
+		Pattern winPattern = Pattern.compile(".*" + currentPlayer + "{" + DISCS_FOR_WIN + "}.*");
+		if (winner.isEmpty()) {
 	        String colour = board[row][column];
-	        Pattern winPattern = 
-	        Pattern.compile(".*" + colour + "{" + DISCS_TO_WIN + "}.*");
-
+	        
 	        String vertical = IntStream.range(0, ROWS)
 	                .mapToObj(r -> board[r][column])
 	                .reduce(String::concat).get();
@@ -119,6 +120,35 @@ public class Connect4 {
 	        	winner = colour;
 	        
 	    }
+	    if (winner.isEmpty()) {
+	        int startOffset = Math.min(column, row);
+	        int myColumn = column - startOffset , myRow = row -startOffset;
+	        StringJoiner stringJoiner = new StringJoiner("");
+	        do{
+	        	stringJoiner.add(board[myRow++][myColumn++]);
+	        	
+	        }while( myColumn < COLUMNS && myRow < ROWS);
+	        
+	        if(winPattern.matcher(stringJoiner.toString()).matches()){
+	        	winner = currentPlayer;
+	        }
+	        
+	    }
+	    
+	    if(winner.isEmpty()){
+	    	int startOffset = Math.min(column, ROWS - 1 - row);
+	    	int myColumn = column - startOffset, myRow = row + startOffset;
+	    	
+	    	StringJoiner stringJoiner = new StringJoiner("");
+	    	do{
+	    		stringJoiner.add(board[myRow--][myColumn++]);
+	    	}while(myColumn < COLUMNS && myRow >= 0);
+	    	
+	    	if(winPattern.matcher(stringJoiner.toString()).matches()){
+	    		winner = currentPlayer;
+	    	}
+	    }
+	    
 	}
 	
 	

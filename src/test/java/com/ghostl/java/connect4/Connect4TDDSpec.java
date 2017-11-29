@@ -162,12 +162,12 @@ public class Connect4TDDSpec {
 	public void 
 	when4Diagonal2DiscsAreConnectedThenThatPlayerWins()
 	{
-	    int[] gameplay = 
-	       new int[] {3, 4, 2, 3, 2, 2, 1, 1, 1, 1};
+	    int[] gameplay = new int[] {3, 4, 2, 3, 2, 2, 1, 1, 1, 1};
+	    
 	    for (int column : gameplay) {
 	        tested.putDiscInColumn(column);
 	    }
-	    assertThat(tested.getWinner(), is("G"));
+	    assertThat(tested.getWinner(), is("R"));
 	}
 	
 	
